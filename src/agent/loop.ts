@@ -62,7 +62,13 @@ export async function agentLoop(
 
     // ── Handle native tool calls ─────────────────────────────────────
     // Push the assistant's response (with tool calls) into context
-    messages.push(result.message);
+    // Some providers (e.g. Kimi) return empty content when tool_calls are present,
+    // which causes "must not be empty" errors on subsequent API calls.
+    const assistantMsg = result.message;
+    if (!assistantMsg.content) {
+      assistantMsg.content = " ";
+    }
+    messages.push(assistantMsg);
 
     for (const toolCall of result.toolCalls) {
       const tool = toolsRegistry[toolCall.name];

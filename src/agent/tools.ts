@@ -2,6 +2,7 @@ import { Tool } from "../types/index.js";
 import { resolve } from "path";
 import { cwd } from "process";
 import { mkdirSync, readFileSync, writeFileSync } from "fs";
+import { defaultRegistry } from "./skill-registry.js";
 
 // ─── Built-in Tools ────────────────────────────────────────────────────────
 
@@ -37,7 +38,7 @@ function calculate(args: { expression: string }): string {
  * Execute a bash command in the current workspace.
  * WARNING: this can modify or delete files — use with care!
  */
-async function bashCommand(args: { command: string }): Promise<string> {
+async function runBash(args: { command: string }): Promise<string> {
   const { exec } = await import("child_process");
   const { promisify } = await import("util");
   const execAsync = promisify(exec);
@@ -60,7 +61,7 @@ async function bashCommand(args: { command: string }): Promise<string> {
  * Parent directories are created automatically.
  * Path traversal outside the workspace is rejected.
  */
-function runWrite(args: { path: string; content: string }): string {
+function writeFile(args: { path: string; content: string }): string {
   console.log(`  🛠️  Tool called: write(${JSON.stringify({ path: args.path, contentLength: args.content.length })})`);
   try {
     const resolved = safePath(args.path);
@@ -78,7 +79,7 @@ function runWrite(args: { path: string; content: string }): string {
  * Edit a file by replacing the first occurrence of old_text with new_text.
  * Path traversal outside the workspace is rejected.
  */
-function runEdit(args: { path: string; old_text: string; new_text: string }): string {
+function editFile(args: { path: string; old_text: string; new_text: string }): string {
   console.log(`  🛠️  Tool called: edit(${JSON.stringify({ path: args.path, old_length: args.old_text.length, new_length: args.new_text.length })})`);
   try {
     const resolved = safePath(args.path);
@@ -99,7 +100,7 @@ function runEdit(args: { path: string; old_text: string; new_text: string }): st
  * Read the contents of a file in the current workspace.
  * Path traversal outside the workspace is rejected.
  */
-function runRead(args: { path: string; limit?: number }): string {
+function readFile(args: { path: string; limit?: number }): string {
   console.log(`  🛠️  Tool called: read(${JSON.stringify(args)})`);
   try {
     const resolved = safePath(args.path);
@@ -115,6 +116,14 @@ function runRead(args: { path: string; limit?: number }): string {
   }
 }
 
+/**
+ * Load a skill's full body text by name from the skill registry.
+ */
+function loadSkill(args: { name: string }): string {
+  console.log(`  🛠️  Tool called: load_skill(${JSON.stringify(args)})`);
+  return defaultRegistry.loadFullText(args.name);
+}
+
 // ─── Tool Registry ─────────────────────────────────────────────────────────
 
 /**
@@ -125,6 +134,20 @@ function runRead(args: { path: string; limit?: number }): string {
  * To add a new tool, just add an entry to this record.
  */
 export const tools: Record<string, Tool> = {
+  load_skill: {
+    definition: {
+      name: "load_skill",
+      description: "Load the full body of a named skill into the current context.",
+      input_schema: {
+        type: "object",
+        properties: {
+          name: { type: "string" },
+        },
+        required: ["name"],
+      },
+    },
+    fn: (args: unknown) => loadSkill(args as { name: string }),
+  },
   calculate: {
     definition: {
       name: "calculate",
@@ -154,7 +177,7 @@ export const tools: Record<string, Tool> = {
         required: ["command"],
       },
     },
-    fn: (args: unknown) => bashCommand(args as { command: string }),
+    fn: (args: unknown) => runBash(args as { command: string }),
   },
   read: {
     definition: {
@@ -175,7 +198,7 @@ export const tools: Record<string, Tool> = {
         required: ["path"],
       },
     },
-    fn: (args: unknown) => runRead(args as { path: string; limit?: number }),
+    fn: (args: unknown) => readFile(args as { path: string; limit?: number }),
   },
   write: {
     definition: {
@@ -196,7 +219,7 @@ export const tools: Record<string, Tool> = {
         required: ["path", "content"],
       },
     },
-    fn: (args: unknown) => runWrite(args as { path: string; content: string }),
+    fn: (args: unknown) => writeFile(args as { path: string; content: string }),
   },
   edit: {
     definition: {
@@ -221,7 +244,7 @@ export const tools: Record<string, Tool> = {
         required: ["path", "old_text", "new_text"],
       },
     },
-    fn: (args: unknown) => runEdit(args as { path: string; old_text: string; new_text: string }),
+    fn: (args: unknown) => editFile(args as { path: string; old_text: string; new_text: string }),
   },
 };
 

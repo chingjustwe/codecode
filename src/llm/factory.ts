@@ -31,13 +31,15 @@ export function createModel(): ChatModel {
 
   const modelName = process.env.LLM_MODEL ?? provider.defaultModel;
 
+  const temperature = Number(process.env.LLM_TEMPERATURE ?? provider.temperature ?? 0);
+
   console.log(`  🔧 Model: ${providerName}/${modelName}`);
 
   return createModelForFramework(provider.apiFramework, {
     apiKey,
     endpoint: provider.endpoint,
     model: modelName,
-    temperature: 0,
+    temperature,
   });
 }
 

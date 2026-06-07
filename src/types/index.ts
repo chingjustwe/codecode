@@ -16,6 +16,7 @@ export interface ProviderConfig {
   defaultModel: string;
   envKey: string;
   apiFramework: ApiFramework;
+  temperature?: number;
 }
 
 /**

@@ -1,3 +1,5 @@
+import { defaultRegistry } from "./skill-registry.js";
+
 /**
  * Build the system prompt that tells the agent how to think and act.
  *
@@ -6,6 +8,8 @@
  * and uses function calling instead of string parsing.
  */
 export function buildSystemPrompt(): string {
+  const skillsDesc = defaultRegistry.describeAvailable();
+
   return `You are a helpful AI assistant with access to tools.
 
 For each user request, follow this process:
@@ -13,6 +17,10 @@ For each user request, follow this process:
 2. If a tool can help, call it using the tool calling mechanism.
 3. After the tool result comes back, use it to continue reasoning.
 4. When you have enough information, provide a clear final answer.
+
+Use load_skill when a task needs specialized instructions before you act.
+Skills available:
+${skillsDesc}
 
 Be concise and direct. If you need to use a tool, call it. If you don't need a tool, answer directly.`;
 }

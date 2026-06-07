@@ -34,6 +34,7 @@ export const PROVIDERS: Record<string, ProviderConfig> = {
     defaultModel: "moonshot-v1-8k",
     envKey: "KIMI_API_KEY",
     apiFramework: "openai",
+    temperature: 1, // Kimi's models are often better with a bit more temperature
   },
   anthropic: {
     endpoint: "https://api.anthropic.com/v1",
