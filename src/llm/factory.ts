@@ -1,3 +1,18 @@
+/**
+ * ChatModel factory — reads environment variables to create the correct model
+ * instance. Dispatches to OpenAIChatModel or AnthropicChatModel based on the
+ * provider's `apiFramework` field (not the provider name itself).
+ *
+ * Exports:
+ * - `createModel()` — factory function, reads config from env vars
+ * - `printAvailableProviders()` — logs all registered provider names
+ *
+ * Dependencies:
+ * - `src/llm/providers.ts` — provider config registry
+ * - `src/llm/openai-chat-model.ts` — OpenAI-compatible model class
+ * - `src/llm/anthropic-chat-model.ts` — Anthropic API model class
+ * - `dotenv` — loads .env into process.env
+ */
 import "dotenv/config";
 import { OpenAIChatModel } from "./openai-chat-model.js";
 import { AnthropicChatModel } from "./anthropic-chat-model.js";

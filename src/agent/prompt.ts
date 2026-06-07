@@ -1,4 +1,17 @@
-import { defaultRegistry } from "./skill-registry.js";
+/**
+ * System prompt builder. Dynamically includes skill descriptions from the
+ * SkillRegistry and instructs the agent on reasoning, tool usage, and the
+ * todo-based planning protocol. Tools themselves are NOT listed here —
+ * they are passed via the LLM API's native `tools` parameter for function
+ * calling support.
+ *
+ * Exports:
+ * - `buildSystemPrompt()` — returns the complete system prompt string
+ *
+ * Dependencies:
+ * - `./tools/skill/skill-registry.ts` — `defaultRegistry` for skill descriptions
+ */
+import { defaultRegistry } from "./tools/skill/skill-registry.js";
 
 /**
  * Build the system prompt that tells the agent how to think and act.

@@ -1,5 +1,12 @@
+/**
+ * Tool for reading file contents within the workspace. Uses safePath()
+ * to reject path-traversal attempts. Optionally limits output lines.
+ *
+ * Exports:
+ * - `ReadTool` — extends BaseTool; used by the agent loop to read files
+ */
 import { readFileSync } from "fs";
-import { BaseTool } from "../tool.js";
+import { BaseTool } from "./tool.js";
 import { safePath } from "../../utils/file-utils.js";
 
 export class ReadTool extends BaseTool {

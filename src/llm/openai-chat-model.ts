@@ -1,18 +1,19 @@
+/**
+ * OpenAI-compatible chat model implementation.
+ *
+ * Wraps any OpenAI-compatible /v1/chat/completions API into the common ChatModel
+ * interface. Handles system prompt injection as a system message, native function
+ * calling via tool_calls, and multi-turn conversation.
+ *
+ * Exports:
+ * - `OpenAIChatModel` — class implementing `ChatModel` via OpenAI-compatible APIs
+ *
+ * Works with: OpenAI, DeepSeek, MiniMax, Kimi (Moonshot), GLM (Zhipu), etc.
+ * Used by: `src/llm/factory.ts` when `apiFramework === "openai"`
+ */
 import { HumanMessage, AIMessage, SystemMessage, BaseMessage } from "../types/messages.js";
 import type { ChatCompletionParams, ChatCompletionResult, ToolCall, ToolDefinition, ChatModel } from "../types/index.js";
 
-/**
- * A minimal OpenAI-compatible chat client.
- *
- * Supports:
- *   - system prompt (via params.system, not inside messages[])
- *   - native tool calling (JSON schema → structured tool_calls)
- *   - max_tokens / temperature
- *   - multi-turn conversation
- *
- * Works with any provider that follows the /v1/chat/completions API format:
- * OpenAI, DeepSeek, MiniMax, Kimi (Moonshot), etc.
- */
 export class OpenAIChatModel implements ChatModel {
   private apiKey: string;
   private endpoint: string;

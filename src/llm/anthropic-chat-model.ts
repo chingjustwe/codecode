@@ -1,17 +1,18 @@
+/**
+ * Anthropic API chat model implementation.
+ *
+ * Wraps the Anthropic Messages API (POST /v1/messages) into the common ChatModel
+ * interface, handling the Anthropic-specific message format, system prompt,
+ * tool_use content blocks, and stop_reason parsing.
+ *
+ * Exports:
+ * - `AnthropicChatModel` — class implementing `ChatModel` via the Anthropic API
+ *
+ * Used by: `src/llm/factory.ts` when `apiFramework === "anthropic"`
+ */
 import { HumanMessage, AIMessage, BaseMessage } from "../types/messages.js";
 import type { ChatCompletionParams, ChatCompletionResult, ToolCall, ChatModel } from "../types/index.js";
 
-/**
- * Anthropic-compatible chat model.
- *
- * Calls POST /v1/messages (the Anthropic API format).
- *
- * Key differences from OpenAI:
- *   - system prompt is a top-level field, not inside messages[]
- *   - tool calls are content[] items with type "tool_use", not a separate field
- *   - tool parameters field is called "input", not "arguments"
- *   - stop_reason tells us why generation stopped ("end_turn" vs "tool_use")
- */
 export class AnthropicChatModel implements ChatModel {
   private apiKey: string;
   private endpoint: string;

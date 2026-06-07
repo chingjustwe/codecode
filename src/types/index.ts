@@ -1,3 +1,17 @@
+/**
+ * Central type definitions for the entire project.
+ *
+ * Re-exports from `./messages.js`:
+ * - `BaseMessage`, `HumanMessage`, `AIMessage`, `SystemMessage` — message classes
+ *
+ * Defines shared interfaces/types used across all layers (LLM, agent, tools):
+ * - `ApiFramework`, `ProviderConfig` — LLM provider configuration
+ * - `ToolParameterProperty`, `ToolDefinition`, `ToolCall`, `Tool` — tool system
+ * - `ChatCompletionParams`, `ChatCompletionResult`, `ChatModel` — model abstraction
+ * - `AgentResult` — agent loop output
+ *
+ * Used by: virtually every module in the project
+ */
 import {
   BaseMessage,
   HumanMessage,

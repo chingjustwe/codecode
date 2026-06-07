@@ -1,7 +1,24 @@
+/**
+ * Core agent reasoning loop. Iterates up to MAX_ITERATIONS rounds, each
+ * time: building context from message history, invoking the LLM, handling
+ * any tool calls, and feeding results back as HumanMessages. Ends when the
+ * model responds without tool calls or when the iteration limit is reached.
+ *
+ * Exports:
+ * - `agentLoop(userInput, model, toolsRegistry, messageHistory?)` — main entry point
+ *   Returns `AgentResult` with `answer` and `history`.
+ *
+ * Dependencies:
+ * - `./prompt.ts` — builds the system prompt (includes skill descriptions)
+ * - `./tools/tool-registry.ts` — tool lookup by name
+ * - `./hooks.ts` — LoopListener lifecycle hooks
+ * - `../types/messages.ts` — BaseMessage / HumanMessage / AIMessage
+ * - `../types/index.ts` — ChatModel, AgentResult, Tool types
+ */
 import { HumanMessage, AIMessage, BaseMessage } from "../types/messages.js";
 import { Tool, AgentResult, ChatModel } from "../types/index.js";
 import { buildSystemPrompt } from "./prompt.js";
-import { ToolRegistry } from "./tool-registry.js";
+import { ToolRegistry } from "./tools/tool-registry.js";
 import { getLoopListeners } from "./hooks.js";
 import type { ToolCallInfo } from "./hooks.js";
 

@@ -1,10 +1,21 @@
-import { toolRegistry } from "../tool-registry.js";
+/**
+ * Barrel — registers all built-in tools with the singleton ToolRegistry
+ * at import time. Re-exports every tool class for external consumers.
+ *
+ * Exports:
+ * - CalculateTool, BashTool, ReadTool, WriteTool, EditTool
+ * - LoadSkillTool, TodoTool
+ *
+ * Side-effect: instantiates and registers each tool with toolRegistry
+ * on module load.
+ */
+import { toolRegistry } from "./tool-registry.js";
 import { CalculateTool } from "./calculate.js";
 import { BashTool } from "./bash.js";
 import { ReadTool } from "./read.js";
 import { WriteTool } from "./write.js";
 import { EditTool } from "./edit.js";
-import { LoadSkillTool } from "./load-skill.js";
+import { LoadSkillTool } from "./skill/load-skill.js";
 import { TodoTool } from "./todo/todo-tool.js";
 
 export { CalculateTool } from "./calculate.js";
@@ -12,7 +23,7 @@ export { BashTool } from "./bash.js";
 export { ReadTool } from "./read.js";
 export { WriteTool } from "./write.js";
 export { EditTool } from "./edit.js";
-export { LoadSkillTool } from "./load-skill.js";
+export { LoadSkillTool } from "./skill/load-skill.js";
 export { TodoTool } from "./todo/todo-tool.js";
 
 const builtinTools = [

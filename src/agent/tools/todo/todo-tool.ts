@@ -1,4 +1,15 @@
-import { BaseTool } from "../../tool.js";
+/**
+ * `todo` tool — updates the current session plan for multi-step work.
+ * Allows the model to create, update, or rewrite a todo list with pending,
+ * in_progress, and completed items. Only one item can be in_progress at a time.
+ *
+ * Exports:
+ * - `TodoTool` — tool class extending `BaseTool`, registered in `src/agent/tools/index.ts`
+ *
+ * Dependencies: `./todo.js` — the `todoManager` singleton and `RawPlanItem` type
+ * Used by: agent loop via tool registry dispatch
+ */
+import { BaseTool } from "../tool.js";
 import { todoManager, type RawPlanItem } from "./todo.js";
 
 export class TodoTool extends BaseTool {

@@ -1,4 +1,11 @@
-import { BaseTool } from "../tool.js";
+/**
+ * Tool for evaluating mathematical expressions via a sanitized eval().
+ * Only characters [0-9 + - * / . ( ) ] are allowed through the sanitizer.
+ *
+ * Exports:
+ * - CalculateTool -- extends BaseTool; used by the agent loop for math
+ */
+import { BaseTool } from "./tool.js";
 
 export class CalculateTool extends BaseTool {
   readonly name = "calculate";
@@ -16,12 +23,12 @@ export class CalculateTool extends BaseTool {
 
   execute(args: Record<string, unknown>): string {
     const expression = args.expression as string;
-    console.log(`  🛠️  Tool called: calculate(${JSON.stringify({ expression })})`);
+    console.log("  \u{1F6E0}\uFE0F  Tool called: calculate(" + JSON.stringify({ expression }) + ")");
     try {
       const sanitized = expression.replace(/[^0-9+\-*/.() ]/g, "");
       // eslint-disable-next-line no-eval
       const result = eval(sanitized);
-      return `Result: ${result}`;
+      return "Result: " + result;
     } catch {
       return "Error: invalid expression";
     }

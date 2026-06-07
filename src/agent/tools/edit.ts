@@ -1,5 +1,12 @@
+/**
+ * Tool for editing files by replacing the first occurrence of old_text
+ * with new_text. Uses safePath() to reject path-traversal attempts.
+ *
+ * Exports:
+ * - `EditTool` — extends BaseTool; used by the agent loop to apply targeted edits
+ */
 import { readFileSync, writeFileSync } from "fs";
-import { BaseTool } from "../tool.js";
+import { BaseTool } from "./tool.js";
 import { safePath } from "../../utils/file-utils.js";
 
 export class EditTool extends BaseTool {

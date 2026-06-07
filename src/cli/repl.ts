@@ -1,13 +1,49 @@
+/**
+ * Interactive REPL — reads user input from stdin, dispatches slash commands
+ * via the command registry, and runs the agent loop for free-form queries.
+ *
+ * Exports:
+ * - `startRepl(model, tools)` — main REPL loop, called from `src/index.ts`
+ *
+ * Dependencies:
+ * - `src/agent/loop.ts` — the agent reasoning loop
+ * - `src/agent/commands/command-registry.ts` — slash command dispatch
+ * - `src/agent/tools/tool-registry.ts` — available tools
+ * - `src/llm/factory.ts` — `printAvailableProviders()` for startup banner
+ */
 import * as readline from "node:readline/promises";
 import "dotenv/config";
 import { stdin as input, stdout as output } from "node:process";
 import { BaseMessage } from "../types/messages.js";
 import { ChatModel } from "../types/index.js";
 import { agentLoop } from "../agent/loop.js";
-import { ToolRegistry } from "../agent/tool-registry.js";
+import { ToolRegistry } from "../agent/tools/tool-registry.js";
+import { commandRegistry } from "../agent/commands/command-registry.js";
 import { printAvailableProviders } from "../llm/factory.js";
 
 const rl = readline.createInterface({ input, output });
+
+function parseCommand(input: string): { name: string; args: string[] } | null {
+  const trimmed = input.trim();
+  if (!trimmed.startsWith("/")) return null;
+  const parts = trimmed.slice(1).trim().split(/\s+/);
+  return { name: parts[0], args: parts.slice(1) };
+}
+
+async function handleCommand(userInput: string): Promise<boolean> {
+  const parsed = parseCommand(userInput);
+  if (!parsed) return false;
+
+  const cmd = commandRegistry.get(parsed.name);
+  if (!cmd) {
+    console.log(`Unknown command: /${parsed.name}. Type /help for available commands.`);
+    return true;
+  }
+
+  const result = await Promise.resolve(cmd.execute(parsed.args));
+  console.log(`\n${result}`);
+  return true;
+}
 
 /**
  * Start an interactive REPL session with the agent.
@@ -18,7 +54,7 @@ export async function startRepl(
   tools: ToolRegistry
 ): Promise<void> {
   console.log("╔════════════════════════════════════════════════════╗");
-  console.log("║       LangChain.js Hello World Agent (TS)         ║");
+  console.log("║           CodeCode Agent (TypeScript)             ║");
   console.log("║                                                   ║");
   console.log(`║  Model : ${process.env.LLM_PROVIDER ?? "openai"}/${model.modelName.padEnd(25)}║`);
   printAvailableProviders();
@@ -30,6 +66,8 @@ export async function startRepl(
   while (true) {
     const userInput = await rl.question("\nYou: ");
     if (userInput.toLowerCase() === "exit") break;
+
+    if (await handleCommand(userInput)) continue;
 
     const result = await agentLoop(userInput, model, tools, history);
     history = result.history;

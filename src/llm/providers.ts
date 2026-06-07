@@ -1,3 +1,14 @@
+/**
+ * Provider configuration registry — maps provider names to their API endpoint,
+ * default model, environment variable key, and API framework type.
+ *
+ * Exports:
+ * - `PROVIDERS` — readonly record of all provider configs
+ * - `listProviders()` — returns all registered provider names
+ * - `getProvider(name)` — looks up a provider config, throws if unknown
+ *
+ * Used by: `src/llm/factory.ts` to instantiate the correct ChatModel
+ */
 import { ProviderConfig } from "../types/index.js";
 
 /**

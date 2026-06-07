@@ -1,4 +1,12 @@
-import type { Tool, ToolDefinition } from "../types/index.js";
+/**
+ * Central registry for tools. Tools are registered by name and can be
+ * retrieved individually or as a list of ToolDefinitions for LLM API calls.
+ *
+ * Exports:
+ * - `ToolRegistry` — class with register/get/list/definitions methods
+ * - `toolRegistry` — singleton default instance (used by the agent loop)
+ */
+import type { Tool, ToolDefinition } from "../../types/index.js";
 import { BaseTool } from "./tool.js";
 
 export class ToolRegistry {

@@ -1,3 +1,22 @@
+/**
+ * Todo plan manager — tracks a structured task list for multi-step agent work.
+ * Implements `LoopListener` to auto-detect when the model has gone too long
+ * without updating the plan and emit a reminder.
+ *
+ * Exports:
+ * - `TodoStatus` — union type: "pending" | "in_progress" | "completed"
+ * - `PlanItem` — interface with content, status, and activeForm fields
+ * - `RawPlanItem` — interface for unvalidated input (optional status & activeForm)
+ * - `TodoManager` — class that manages plan items, enforces single in_progress item
+ * - `todoManager` — singleton TodoManager instance
+ *
+ * Dependencies:
+ * - `../../hooks.js` — `LoopListener` interface for agent loop integration
+ *
+ * Used by:
+ * - `src/agent/tools/todo/todo-tool.ts` — tool execution calls `todoManager.update()`
+ * - `src/index.ts` — registered as loop listener via `registerLoopListener(todoManager)`
+ */
 import type { LoopListener, RoundContext, ToolCallInfo } from "../../hooks.js";
 
 export type TodoStatus = "pending" | "in_progress" | "completed";

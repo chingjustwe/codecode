@@ -1,8 +1,22 @@
+/**
+ * Skill registry — scans `.agents/skills/` for subdirectories containing
+ * `SKILL.md` files, parses YAML frontmatter, and provides lookup by name.
+ * Used by the prompt builder to describe available skills and by the
+ * `load_skill` tool to retrieve full skill text.
+ *
+ * Exports:
+ * - `SkillManifest` — interface: name, description, file path
+ * - `SkillDocument` — interface: manifest + body text
+ * - `SkillRegistry` — class; `describeAvailable()`, `loadFullText(name)`
+ * - `defaultRegistry` — singleton SkillRegistry instance
+ *
+ * Used by:
+ * - `src/agent/prompt.ts` — `describeAvailable()` for system prompt
+ * - `src/agent/tools/skill/load-skill.ts` — `loadFullText()` for tool execution
+ */
 import { readFileSync, existsSync, readdirSync, statSync } from "fs";
 import { join } from "path";
 import { cwd } from "process";
-
-// ─── Types ────────────────────────────────────────────────────────────────
 
 export interface SkillManifest {
   name: string;
@@ -15,8 +29,6 @@ export interface SkillDocument {
   body: string;
 }
 
-// ─── Registry ─────────────────────────────────────────────────────────────
-
 export class SkillRegistry {
   private documents: Record<string, SkillDocument> = {};
   private skillsDir: string;
@@ -26,8 +38,6 @@ export class SkillRegistry {
     this.loadAll();
   }
 
-  // ── Loading ──────────────────────────────────────────────────────────
-
   private loadAll(): void {
     const dir = this.skillsDir;
     if (!existsSync(dir)) {
@@ -36,10 +46,6 @@ export class SkillRegistry {
     this.scanDir(dir);
   }
 
-  /**
-   * Scan the skills directory. Each sub-directory that contains a SKILL.md
-   * file is loaded as a skill.
-   */
   private scanDir(dir: string): void {
     const entries = readdirSync(dir).sort();
     for (const entry of entries) {
@@ -62,13 +68,11 @@ export class SkillRegistry {
   }
 
   private inferName(path: string): string {
-    // Parent directory name, e.g. .agents/skills/my-skill/SKILL.md → "my-skill"
     const parts = path.replace(/\\/g, "/").split("/");
     return parts[parts.length - 2] || "unknown";
   }
 
   private parseFrontmatter(text: string): { meta: Record<string, string>; body: string } {
-    //const match = text.match(/^---\n(.*?)\n---\n([\s\S]*)$/);
     const match = text.match(/^---\s*\n(.*?)\n---\s*\n(.*)$/s);
     if (!match) {
       return { meta: {}, body: text };
@@ -82,11 +86,6 @@ export class SkillRegistry {
     return { meta, body: match[2] };
   }
 
-  // ── Querying ─────────────────────────────────────────────────────────
-
-  /**
-   * Describe available skills for the system prompt.
-   */
   describeAvailable(): string {
     const names = Object.keys(this.documents).sort();
     if (names.length === 0) {
@@ -100,10 +99,6 @@ export class SkillRegistry {
       .join("\n");
   }
 
-  /**
-   * Load the full body text of a named skill, wrapped in a <skill> tag.
-   * Returns an error message if the skill doesn't exist.
-   */
   loadFullText(name: string): string {
     const doc = this.documents[name];
     if (!doc) {
@@ -114,5 +109,4 @@ export class SkillRegistry {
   }
 }
 
-/** Default singleton registry, loaded from .agents/skills/ */
 export const defaultRegistry = new SkillRegistry();

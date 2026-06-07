@@ -3,6 +3,62 @@
 TypeScript 6.0 / ES modules / zero-runtime-dep (dotenv only).  
 Entry: `src/index.ts` → `createModel()` → `startRepl()` → `agentLoop()`.
 
+## Code Commenting Rules (MUST follow)
+
+These rules apply to all code files (.ts, .js, .py, .tsx, etc.) created or modified by the agent:
+
+### Creating new files
+
+Every new code file MUST start with a top-level JSDoc (or equivalent) comment that describes:
+
+- **What the file is for** — the module's purpose and responsibility
+- **Key exports** — what classes, functions, or types it exposes (one-line summary each)
+- **Relationships** — which other modules it depends on or is consumed by (if non-obvious)
+
+Example:
+
+```typescript
+/**
+ * Manages the tool registry: loads all built-in tools and provides
+ * lookup by name. Used by the agent loop to discover available tools.
+ *
+ * Exports:
+ * - `getToolDefinitions()` — returns all tool definitions for the LLM API
+ * - `executeTool(name, args)` — runs a tool by name with given arguments
+ */
+```
+
+Exceptions: trivial files (a single type export, re-export barrel files like `index.ts`) may use a shorter one-liner.
+
+### Modifying existing files
+
+When modifying an existing file, the agent MUST check whether the file's top-level comment still accurately describes the module after the change. If the purpose, exports, or relationships have changed, update the comment accordingly.
+
+### What counts as a "change" that requires comment review
+
+- Adding, removing, or renaming exported functions/classes/types
+- Changing the module's core responsibility or behavior
+- Adding or removing significant dependencies
+- Refactoring that splits or merges logic across files
+
+### What does NOT require comment review
+
+- Bug fixes that don't alter the module's public API or core purpose
+- Internal refactoring that doesn't change exported interfaces
+- Adding helper/utility functions that serve the existing purpose
+- Importing new dependencies for internal use (the dependency list in the comment is optional, not required)
+
+### Barrel files (`index.ts`)
+
+Barrel (re-export) files should have a comment listing what they re-export from, e.g.:
+
+```typescript
+/**
+ * Barrel — re-exports all tools and the registry.
+ * Usage: `import { getToolDefinitions } from './tools'`
+ */
+```
+
 ## Commands
 
 | Command | What it does |

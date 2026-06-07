@@ -1,4 +1,11 @@
-import { BaseTool } from "../tool.js";
+/**
+ * Tool for executing shell commands within the current workspace.
+ * Uses a 30-second timeout. Commands run via child_process.exec.
+ *
+ * Exports:
+ * - `BashTool` — extends BaseTool; used by the agent loop to run CLI commands
+ */
+import { BaseTool } from "./tool.js";
 
 export class BashTool extends BaseTool {
   readonly name = "bash";

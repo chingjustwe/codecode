@@ -1,6 +1,13 @@
+/**
+ * Tool for writing file contents within the workspace. Automatically creates
+ * parent directories. Uses safePath() to reject path-traversal attempts.
+ *
+ * Exports:
+ * - `WriteTool` — extends BaseTool; used by the agent loop to create/overwrite files
+ */
 import { mkdirSync, writeFileSync } from "fs";
 import { resolve } from "path";
-import { BaseTool } from "../tool.js";
+import { BaseTool } from "./tool.js";
 import { safePath } from "../../utils/file-utils.js";
 
 export class WriteTool extends BaseTool {
