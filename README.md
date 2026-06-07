@@ -7,7 +7,7 @@
 
 ## Features
 
-- 🧠 **Multi-provider LLM support** — OpenAI, DeepSeek, MiniMax, Kimi (OpenAI-compatible), and Anthropic / Claude
+- 🧠 **Multi-provider LLM support** — OpenAI, DeepSeek, MiniMax, Kimi, GLM (OpenAI-compatible), and Anthropic / Claude
 - 🛠️ **Native tool calling** — tools are defined as JSON schemas and dispatched by the LLM natively (no string parsing)
 - 📁 **Workspace-aware file operations** — read, write, edit files with path-traversal protection
 - 🐚 **Bash execution** — run shell commands inside the current workspace  
@@ -46,14 +46,17 @@ npm run minimax
 
 # Kimi
 npm run kimi
+
+# GLM
+npm run glm
 ```
 
 ### Environment variables
 
 | Variable | Description |
 |---|---|
-| `LLM_PROVIDER` | Provider name: `openai`, `anthropic`, `deepseek`, `minimax`, `kimi`, `claude` (alias for `anthropic`) |
-| `OPENAI_API_KEY` | OpenAI / DeepSeek / MiniMax / Kimi API key |
+| `LLM_PROVIDER` | Provider name: `openai`, `anthropic`, `deepseek`, `minimax`, `kimi`, `glm`, `claude` (alias for `anthropic`) |
+| `OPENAI_API_KEY` | OpenAI / DeepSeek / MiniMax / Kimi / GLM API key |
 | `ANTHROPIC_API_KEY` | Anthropic API key |
 | `LLM_MODEL` | (Optional) Override the default model for the selected provider |
 
