@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "skills": {
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "4eabc66183767153e404b39d1b839b1c37f2d82d86f0a0d7e880a579d8d62336"
+    },
+    "humanizer": {
+      "source": "NousResearch/hermes-agent",
+      "sourceType": "github",
+      "skillPath": "skills/creative/humanizer/SKILL.md",
+      "computedHash": "0a5b3d841327e2ee23a33959ea18fd91d4bc2a132348015241d99de52684a9f4"
+    },
+    "ui-ux-pro-max": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/ui-ux-pro-max/SKILL.md",
+      "computedHash": "0a413bf988d06481f69bb81df2070741c3ba12dd9f1be2706d57f259c905992d"
+    }
+  }
+}

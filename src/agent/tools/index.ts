@@ -4,7 +4,8 @@
  *
  * Exports:
  * - CalculateTool, BashTool, ReadTool, WriteTool, EditTool
- * - LoadSkillTool, TodoTool
+ * - LoadSkillTool, TodoTool, SaveMemoryTool
+ * - DispatchTaskTool
  *
  * Side-effect: instantiates and registers each tool with toolRegistry
  * on module load.
@@ -18,6 +19,7 @@ import { EditTool } from "./edit.js";
 import { LoadSkillTool } from "./skill/load-skill.js";
 import { TodoTool } from "./todo/todo-tool.js";
 import { SaveMemoryTool } from "./memory/save-memory-tool.js";
+import { DispatchTaskTool } from "../subagent/subagent-tool.js";
 
 export { CalculateTool } from "./calculate.js";
 export { BashTool } from "./bash.js";
@@ -27,6 +29,7 @@ export { EditTool } from "./edit.js";
 export { LoadSkillTool } from "./skill/load-skill.js";
 export { TodoTool } from "./todo/todo-tool.js";
 export { SaveMemoryTool } from "./memory/save-memory-tool.js";
+export { DispatchTaskTool } from "../subagent/subagent-tool.js";
 
 const builtinTools = [
   new CalculateTool(),
@@ -37,6 +40,7 @@ const builtinTools = [
   new LoadSkillTool(),
   new TodoTool(),
   new SaveMemoryTool(),
+  new DispatchTaskTool(),
 ];
 
 for (const tool of builtinTools) {

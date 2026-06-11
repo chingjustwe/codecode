@@ -131,6 +131,25 @@ Barrel (re-export) files should have a comment listing what they re-export from,
 - `.env` is gitignored.
 - `LLM_CONTEXT_WINDOW` overrides the model's context window for token % display.
 
+## Subagent system (`src/agent/subagent/`)
+
+Subagents provide isolated LLM contexts for complex sub-tasks. The parent agent
+uses the `dispatch_task` tool to spawn a subagent with a fresh message history
+and restricted toolset; only the final summary is returned.
+
+- **Run loop** (`src/agent/subagent/subagent.ts`): `runSubagent(prompt, model, registry)`
+  creates a clean `messages[]`, invokes the LLM with `SUBAGENT_SYSTEM`, processes
+  tool calls, and returns the final text when the model responds without tools.
+- **Tools**: subagents get a strict subset — `read`, `bash` (read-only — write
+  commands like `rm`, `mv`, `>`, `|`, `curl` are rejected at runtime), and
+  `calculate`. No `write`, `edit`, `todo`, `save_memory`, or `dispatch_task`.
+- **Safety limits**: max 30 LLM turns per subagent. A tool error immediately
+  terminates the subagent and returns an error summary.
+- **Tool registration** (`DispatchTaskTool` in `src/agent/subagent/subagent-tool.ts`):
+  registered like any other tool but requires `DispatchTaskTool.init(model, registry)`
+  at startup (done in `src/index.ts`). The parent agent sees `dispatch_task` in its
+  tool list; subagents never see it (it's excluded from `SUBAGENT_TOOL_NAMES`).
+
 ## Adding a Provider
 
 Add an entry to `src/llm/providers.ts` specifying `endpoint`, `defaultModel`, `envKey`, and `apiFramework` (`"openai"` or `"anthropic"`). Set `{NAME}_API_KEY` in `.env`, then run with `LLM_PROVIDER=<name> npm start`.
